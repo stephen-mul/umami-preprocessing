@@ -1,0 +1,62 @@
+variables: !include plit_electron_variables.yaml
+#transform: !include transform.yaml
+
+ttbar: &ttbar
+  name: ttbar
+  equal_jets: False
+  pattern:
+    - "user.pgadow.LD_2024_05_20.601229.PhPy8EG_A14_ttbar_hdamp258p75_SingleLep.e8514_s4162_r14622_p6119_TREE/*.h5"
+    - "user.pgadow.LD_2024_05_20.601230.PhPy8EG_A14_ttbar_hdamp258p75_dil.e8514_s4162_r14622_p6119_TREE/*.h5"
+    - "user.pgadow.LD_2024_05_20.601237.PhPy8EG_A14_ttbar_hdamp258p75_allhad.e8514_s4162_r14622_p6119_TREE/*.h5"
+    - "user.pgadow.LD_2024_05_20.601589.PhPy8EG_A14_ttbar_hdamp258p75_nonallhadron.e8549_s4162_r14622_p6119_TREE/*.h5"
+    - "user.pgadow.LD_2024_05_22.601229.PhPy8EG_A14_ttbar_hdamp258p75_SingleLep.e8514_s4159_r15224_p6119_TREE/*.h5"
+    - "user.pgadow.LD_2024_05_22.601230.PhPy8EG_A14_ttbar_hdamp258p75_dil.e8514_s4159_r15224_p6119_TREE/*.h5"
+    - "user.pgadow.LD_2024_05_22.601237.PhPy8EG_A14_ttbar_hdamp258p75_allhad.e8514_s4159_r15224_p6119_TREE/*.h5"
+    - "user.pgadow.LD_2024_05_22.601589.PhPy8EG_A14_ttbar_hdamp258p75_nonallhadron.e8549_s4159_r15224_p6119_TREE/*.h5"
+
+global_cuts:
+  train:
+    - [eventNumber, "%10<=", 7]
+  val:
+    - [eventNumber, "%10==", 8]
+  test:
+    - [eventNumber, "%10==", 9]
+
+lowpt: &lowpt
+  name: lowpt
+  cuts:
+    - [pt, ">", 10_000]
+    - [absEta, ">", 1.52]
+
+components:
+  - region:
+      <<: *lowpt
+    sample:
+      <<: *ttbar
+    flavours: [elxprompt]
+    num_jets: 18_000_000
+
+  - region:
+      <<: *lowpt
+    sample:
+      <<: *ttbar
+    flavours: [npxall]
+    num_jets: 4_500_000
+
+resampling:
+  target: elxprompt
+  method: countup
+  sampling_fraction: 1.0
+  variables:
+    pt:
+      bins: [[10_000, 50_000, 8], [50_000, 100_000, 5], [100_000, 500_000, 5], [500_000, 2_000_000, 3]]
+    eta:
+      bins: [[-2.47, -1.52, 8], [1.52, 2.47, 8]]
+# note: sensible defaults are defined in the PreprocessingConfig constructor
+global:
+  jets_name: electrons
+  batch_size: 1_000_000
+  num_jets_estimate: 2_000_000
+  base_dir: /nfs/dust/atlas/user/pgadow/plit/data/preprocessed/electrons_endcap_run3_18p5M
+  ntuple_dir: /nfs/dust/atlas/user/pgadow/plit/data/ntuples
+  out_dir: /nfs/dust/atlas/user/pgadow/plit/data/preprocessed/electrons_endcap_run3_18p5M

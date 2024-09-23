@@ -5,13 +5,9 @@ ttbar: &ttbar
   name: ttbar
   equal_jets: False
   pattern:
-    - "user.pgadow.LD_2024_04_13.601589.PhPy8EG_A14_ttbar_hdamp258p75_nonallhadron.e8549_s4162_r14622_p6119_TREE/*.h5"
-    - "user.pgadow.LD_2024_04_13.601237.PhPy8EG_A14_ttbar_hdamp258p75_allhad.e8514_s4162_r14622_p6119_TREE/*.h5"
-    - "user.pgadow.LD_2024_04_13.601230.PhPy8EG_A14_ttbar_hdamp258p75_dil.e8514_s4162_r14622_p6119_TREE/*.h5"
-    - "user.pgadow.LD_2024_04_13.601229.PhPy8EG_A14_ttbar_hdamp258p75_SingleLep.e8514_s4162_r14622_p6119_TREE/*.h5"
-    - "user.pgadow.LD_2024_04_13.601589.PhPy8EG_A14_ttbar_hdamp258p75_nonallhadron.e8547_s3797_r13144_p6119_TREE/*.h5"
-    - "user.pgadow.LD_2024_04_13.410471.PhPy8EG_A14_ttbar_hdamp258p75_allhad.e6337_s3681_r13144_p6119_TREE/*.h5"
-    - "user.pgadow.LD_2024_04_13.410470.PhPy8EG_A14_ttbar_hdamp258p75_nonallhad.e6337_s3681_r13144_p6119_TREE/*.h5"
+    - "user.pgadow.LD_2024_05_20.410470.PhPy8EG_A14_ttbar_hdamp258p75_nonallhad.e6337_s3681_r13144_p6119_TREE/*.h5"
+    - "user.pgadow.LD_2024_05_20.410471.PhPy8EG_A14_ttbar_hdamp258p75_allhad.e6337_s3681_r13144_p6119_TREE/*.h5"
+    - "user.pgadow.LD_2024_05_20.601589.PhPy8EG_A14_ttbar_hdamp258p75_nonallhadron.e8547_s3797_r13144_p6119_TREE/*.h5"
 
 global_cuts:
   train:
@@ -43,7 +39,7 @@ components:
 
 
 resampling:
-  target: muxprompt
+  target: npxall
   method: countup
   sampling_fraction: auto
   variables:
@@ -57,6 +53,6 @@ global:
   jets_name: muons
   batch_size: 1_000_000
   num_jets_estimate: 5_000_000
-  base_dir: /nfs/dust/atlas/user/pgadow/plit/data/preprocessed/muons_iso_35M
+  base_dir: /nfs/dust/atlas/user/pgadow/plit/data/preprocessed/muons_run2_35M
   ntuple_dir: /nfs/dust/atlas/user/pgadow/plit/data/ntuples
-  out_dir: /nfs/dust/atlas/user/pgadow/plit/data/preprocessed/muons_iso_35M
+  out_dir: /nfs/dust/atlas/user/pgadow/plit/data/preprocessed/muons_run2_35M

@@ -1,0 +1,66 @@
+variables: !include plit_muon_variables.yaml
+#transform: !include transform.yaml
+
+ttbar: &ttbar
+  name: ttbar
+  equal_jets: False
+  pattern:
+    - "user.pgadow.LD_2024_01_31.410470.PhPy8EG_A14_ttbar_hdamp258p75_nonallhad.e6337_s3681_r13144_p5934_TREE/*.h5"
+    - "user.pgadow.LD_2024_01_31.410471.PhPy8EG_A14_ttbar_hdamp258p75_allhad.e6337_s3681_r13144_p5934_TREE/*.h5"
+    - "user.pgadow.LD_2024_01_31.601229.PhPy8EG_A14_ttbar_hdamp258p75_SingleLep.e8514_s4159_r14799_p5934_TREE/*.h5"
+    - "user.pgadow.LD_2024_01_31.601229.PhPy8EG_A14_ttbar_hdamp258p75_SingleLep.e8514_s4162_r14622_p5934_TREE/*.h5"
+    - "user.pgadow.LD_2024_01_31.601230.PhPy8EG_A14_ttbar_hdamp258p75_dil.e8514_s4159_r14799_p5934_TREE/*.h5"
+    - "user.pgadow.LD_2024_01_31.601230.PhPy8EG_A14_ttbar_hdamp258p75_dil.e8514_s4162_r14622_p5934_TREE/*.h5"
+    - "user.pgadow.LD_2024_01_31.601237.PhPy8EG_A14_ttbar_hdamp258p75_allhad.e8514_s4159_r14799_p5934_TREE/*.h5"
+    - "user.pgadow.LD_2024_01_31.601237.PhPy8EG_A14_ttbar_hdamp258p75_allhad.e8514_s4162_r14622_p5934_TREE/*.h5"
+    - "user.pgadow.LD_2024_01_31.601589.PhPy8EG_A14_ttbar_hdamp258p75_nonallhadron.e8547_s3797_r13144_p5934_TREE/*.h5"
+    - "user.pgadow.LD_2024_01_31.601589.PhPy8EG_A14_ttbar_hdamp258p75_nonallhadron.e8549_s4159_r14799_p5934_TREE/*.h5"
+    - "user.pgadow.LD_2024_01_31.601589.PhPy8EG_A14_ttbar_hdamp258p75_nonallhadron.e8549_s4162_r14622_p5934_TREE/*.h5"
+
+global_cuts:
+  train:
+    - [eventNumber, "%10<=", 7]
+  val:
+    - [eventNumber, "%10==", 8]
+  test:
+    - [eventNumber, "%10==", 9]
+
+highpt: &highpt
+  name: highpt
+  cuts:
+    - [pt_track, ">", 15_000]
+
+components:
+  - region:
+      <<: *highpt
+    sample:
+      <<: *ttbar
+    flavours: [muxprompt]
+    num_jets: 25_000_000
+
+  - region:
+      <<: *highpt
+    sample:
+      <<: *ttbar
+    flavours: [npxall]
+    num_jets: 25_000_000
+
+
+resampling:
+  target: npxall
+  method: countup
+  sampling_fraction: auto
+  variables:
+    pt_track:
+      bins: [[15_000, 50_000, 7], [50_000, 100_000, 5], [100_000, 500_000, 20], [500_000, 1_000_000, 5]]
+    absEta_track:
+      bins: [[0., 2.5, 25]]
+
+# note: sensible defaults are defined in the PreprocessingConfig constructor
+global:
+  jets_name: muons
+  batch_size: 1_000_000
+  num_jets_estimate: 5_000_000
+  base_dir: /nfs/dust/atlas/user/pgadow/plit/data/preprocessed/muons_highpt_50M
+  ntuple_dir: /nfs/dust/atlas/user/pgadow/plit/data/ntuples/
+  out_dir: /nfs/dust/atlas/user/pgadow/plit/data/preprocessed/muons_highpt_50M

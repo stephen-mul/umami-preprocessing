@@ -4,13 +4,31 @@ electrons:
     - eta
     - absEta
     - phi
+    - pt_track
+    - eta_track
+    - absEta_track
+    - phi_track
     - ptvarcone30Rel
     - topoetcone30Rel
     - caloClusterSumEtRel
     - ptfrac_lepton
     - ptrel_lepton
     - dRtrackjet_lepton
+    - ptfrac_track
+    - ptrel_track
+    - dRtrackjet_track
+    - PromptLeptonImprovedInput_CandVertex_normDistToPriVtxLongitudinalBest_ThetaCutVtx
+    - d0sig
+    - z0sinTheta
+    - SCTWeightedCharge
+    - qd0
+    - ntracks
     - nTracksTrackjet
+    - HighPtCaloOnly
+    - Loose_VarRad
+    - Tight_VarRad
+    - TightTrackOnly_VarRad
+    - TightTrackOnly_FixedRad
   labels:
     - iffClass
 
@@ -39,7 +57,7 @@ electron_tracks:
     - numberOfSCTHits
     - numberOfSCTSharedHits
     - numberOfTRTHits
-    - leptonID
+    - electron_track
   labels:
     - ftagTruthOriginLabel
     - ftagTruthTypeLabel

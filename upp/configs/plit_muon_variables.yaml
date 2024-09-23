@@ -4,13 +4,24 @@ muons:
     - eta
     - absEta
     - phi
+    - pt_track
+    - eta_track
+    - absEta_track
+    - phi_track
     - ptvarcone30TTVARel
     - topoetcone30Rel
     - caloClusterERel
     - ptfrac_lepton
     - ptrel_lepton
     - dRtrackjet_lepton
+    - ptfrac_track
+    - ptrel_track
+    - dRtrackjet_track
     - nTracksTrackjet
+    - PflowLoose_VarRad
+    - PflowTight_VarRad
+    - Loose_VarRad
+    - Tight_VarRad
   labels:
     - iffClass
     - muonType
@@ -39,7 +50,7 @@ muon_tracks:
     - numberOfPixelSplitHits
     - numberOfSCTHits
     - numberOfSCTSharedHits
-    - leptonID
+    - muon_track
   labels:
     - ftagTruthOriginLabel
     - ftagTruthTypeLabel
