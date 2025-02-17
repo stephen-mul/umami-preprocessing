@@ -78,5 +78,6 @@ resampling:
 global:
   batch_size: 4_000_000
   num_jets_estimate: 10_000_000
-  base_dir: /unix/atlastracking/samples/xbb/dumps/p5488_ext/
+  base_dir: /srv/beegfs/scratch/groups/rodem/stephen_deco/
+  ntuple_dir: /srv/beegfs/scratch/groups/rodem/stephen_deco/tdd_ntuples/
   merge_test_samples: True

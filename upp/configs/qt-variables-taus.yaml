@@ -9,6 +9,20 @@ jets:
     - GN2Xv02_ptop
     - GN2Xv02_pqcd
     - n_tracks
+    - Tau1,
+    - Tau2,
+    - Tau3,
+    - Tau4,
+    - Tau1_wta,
+    - Tau2_wta,
+    - Tau3_wta,
+    - Tau4_wta,
+    - Tau21,
+    - Tau32,
+    - Tau42,
+    - Tau21_wta,
+    - Tau32_wta,
+    - Tau42_wta,
   labels:
     - R10TruthLabel_R22v1
     - R10TruthLabel_R22v1_TruthJetMass
@@ -17,7 +31,7 @@ jets:
 tracks:
   inputs:
     - pt
-    #- dr
+    - dr
     - d0
     - IP3D_signed_d0
     - z0SinTheta
@@ -51,3 +65,6 @@ flow:
     - flow_deta
     - flow_dphi
     - flow_dr
+  labels:
+    - ftagTruthOriginLabel
+    - ftagTruthVertexIndex
