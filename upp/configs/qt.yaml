@@ -1,4 +1,4 @@
-variables: !include qt-variables.yaml
+variables: !include qt-variables-taus.yaml
 global_cuts: !include splits/simple-split.yaml
 
 hbb: &hbb
