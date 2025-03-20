@@ -4,19 +4,11 @@ jets:
     - eta
     - abs_eta
     - mass
-    - n_tracks
     - GN2Xv02_phbb
     - GN2Xv02_phcc
     - GN2Xv02_ptop
     - GN2Xv02_pqcd
-    - GhostBHadronsFinalCount
-    - GhostCHadronsFinalCount
-    - C2
-    - D2
-    - L2
-    - M2
-    - N2
-    - Tau21
+    - n_tracks
     - Tau1
     - Tau2
     - Tau3
@@ -25,6 +17,7 @@ jets:
     - Tau2_wta
     - Tau3_wta
     - Tau4_wta
+    - Tau21
     - Tau32
     - Tau42
     - Tau21_wta
@@ -38,17 +31,15 @@ jets:
 tracks:
   inputs:
     - pt
+    - dr
     - d0
-    #- lifetimeSignedD0
     - IP3D_signed_d0
     - z0SinTheta
     - d0Uncertainty
     - dphi
     - deta
     - qOverP
-    #- lifetimeSignedD0Significance
     - IP3D_signed_d0_significance
-    #- lifetimeSignedZ0SinThetaSignificance
     - IP3D_signed_z0_significance
     - phiUncertainty
     - thetaUncertainty
@@ -65,35 +56,7 @@ tracks:
     - leptonID
   labels:
     - ftagTruthOriginLabel
-    - ftagTruthVertexIndex
-
-
-truth_hadrons:
-  labels:
-    - pt
-    - mass
-    - energy
-    - eta
-    - phi
-    - deta
-    - dphi
-    - dr
-    - Lxy
-    - charge
-    - pdgId
-    - barcode
-    - ftagTruthParentBarcode
-  inputs:
-    - pt
-    - mass
-    - energy
-    - eta
-    - phi
-    - deta
-    - dphi
-    - dr
-    - Lxy
-    - charge
+    - ftagTruthVertexIndexs
 
 flow:
   inputs:
@@ -101,3 +64,7 @@ flow:
     - flow_energy
     - flow_deta
     - flow_dphi
+    - flow_dr
+  labels:
+    - ftagTruthOriginLabel
+    - ftagTruthVertexIndex
