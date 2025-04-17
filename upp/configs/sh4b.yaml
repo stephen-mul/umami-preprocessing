@@ -1,0 +1,85 @@
+variables: !include qt-variables-taus.yaml
+global_cuts: !include splits/simple-split.yaml
+
+hbb: &hbb
+  name: hbb
+  pattern: 
+  - user.stmullig.801471.e8441_s3681_r13144_p5981.tdd.*/*.h5 #mc20
+  - user.stmullig.801972.e8514_a911_r14908_p5934.tdd.*/*.h5 #mc23
+hcc: &hcc
+  name: hcc
+  pattern:
+  - user.stmullig.801472.e8441_s3681_r13144_p5981.tdd.*/*.h5 #mc20
+  - user.stmullig.801973.e8514_a911_r14908_p5934.tdd.*/*.h5 #mc23
+top: &top
+  name: top
+  equal_jets: true
+  pattern:
+    - user.stmullig.426345.e6880_s3681_r13144_p5981.tdd.*/*.h5 #mc20
+    - user.stmullig.426345.e6880_s3681_r13145_p5981.tdd.*/*.h5 #mc20
+    - user.stmullig.801685.e8514_a911_r14908_p5934.tdd.*/*.h5 #mc23
+qcd: &qcd
+  name: qcd
+  equal_jets: true
+  pattern:
+    - user.stmullig.364703.e7142_s3681_r13144_p5981.tdd.*/*.h5 #mc20
+    - user.stmullig.364704.e7142_s3681_r13144_p5981.tdd.*/*.h5 #mc20
+    - user.stmullig.364705.e7142_s3681_r13144_p5981.tdd.*/*.h5 #mc20
+    - user.stmullig.801168.e8514_a911_r14908_p5934.tdd.*/*.h5 #mc23
+    - user.stmullig.801169.e8514_a911_r14908_p5934.tdd.*/*.h5 #mc23
+    - user.stmullig.801170.e8514_a911_r14908_p5934.tdd.*/*.h5 #mc23
+
+inclusive: &inclusive
+  name: inclusive
+  cuts: []
+
+components:
+  - region:
+      <<: *inclusive
+    sample:
+      <<: *hbb
+    flavours: [hbb]
+    num_jets: 30_000_000
+
+  - region:
+      <<: *inclusive
+    sample:
+      <<: *hcc
+    flavours: [hcc]
+    num_jets: 30_000_000
+
+  - region:
+      <<: *inclusive
+    sample:
+      <<: *top
+    flavours: [top]
+    num_jets: 15_000_000 # previously 30_000_000
+
+  - region:
+      <<: *inclusive
+    sample:
+      <<: *qcd
+    flavours: [qcd]
+    num_jets: 50_000_000
+
+resampling:
+  target: hbb
+  method: countup
+  sampling_fraction: 1
+  variables:
+    pt:
+      bins: [[250_000, 1_300_000, 50]]
+    abs_eta:
+      bins: [[0, 2, 20]]
+    mass:
+      bins: [[50_000, 300_000, 50]]
+
+# note: sensible defaults are defined in the PreprocessingConfig constructor
+global:
+  batch_size: 400_000 #4_000_000
+  num_jets_estimate: 1_000_000 #10_000_000
+  base_dir: /srv/beegfs/scratch/groups/rodem/stephen_deco/
+  ntuple_dir: /srv/beegfs/scratch/groups/rodem/stephen_deco/tdd_ntuples/
+  components_dir: /srv/beegfs/scratch/groups/rodem/stephen_deco/components/
+  out_dir: /srv/beegfs/scratch/groups/rodem/stephen_deco/outputs/
+  merge_test_samples: True
