@@ -5,10 +5,10 @@ jets:
     - abs_eta
     - mass
     - n_tracks
-    - GN2Xv02_phbb
-    - GN2Xv02_phcc
-    - GN2Xv02_ptop
-    - GN2Xv02_pqcd
+    #- GN2Xv02_phbb
+    #- GN2Xv02_phcc
+    #- GN2Xv02_ptop
+    #- GN2Xv02_pqcd
     - GhostBHadronsFinalCount
     - GhostCHadronsFinalCount
     - C2
@@ -40,16 +40,13 @@ tracks:
     - pt
     - d0
     - lifetimeSignedD0
-    - IP3D_signed_d0
     - z0SinTheta
     - d0Uncertainty
     - dphi
     - deta
     - qOverP
     - lifetimeSignedD0Significance
-    - IP3D_signed_d0_significance
     - lifetimeSignedZ0SinThetaSignificance
-    - IP3D_signed_z0_significance
     - phiUncertainty
     - thetaUncertainty
     - qOverPUncertainty

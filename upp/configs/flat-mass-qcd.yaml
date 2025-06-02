@@ -57,7 +57,7 @@ components:
     num_jets: 50_000_000
 
 resampling:
-  target: hbb
+  target: qcd
   method: countup
   sampling_fraction: 1
   variables:
@@ -72,8 +72,8 @@ resampling:
 global:
   batch_size: 400_000 #4_000_000
   num_jets_estimate: 1_000_000 #10_000_000
-  base_dir: /srv/beegfs/scratch/groups/rodem/stephen_deco/upp/flat-mass/
+  base_dir: /srv/beegfs/scratch/groups/rodem/stephen_deco/upp/flat-mass-qcd/
   ntuple_dir: /srv/beegfs/scratch/groups/rodem/stephen_deco/mc20_flat_mass_p6453_sh4b_p6480/flat_mass/
-  components_dir: /srv/beegfs/scratch/groups/rodem/stephen_deco/upp/flat-mass/components/
-  out_dir: /srv/beegfs/scratch/groups/rodem/stephen_deco/upp/flat-mass/outputs/
+  components_dir: /srv/beegfs/scratch/groups/rodem/stephen_deco/upp/flat-mass-qcd/components/
+  out_dir: /srv/beegfs/scratch/groups/rodem/stephen_deco/upp/flat-mass-qcd/outputs/
   merge_test_samples: True
