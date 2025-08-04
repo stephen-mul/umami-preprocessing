@@ -2,6 +2,25 @@
 
 ### [Latest]
 
+- Adding pydoclint and Update Pre-Commit [#106](https://github.com/umami-hep/umami-preprocessing/pull/106)
+- Updated config for gn3xv00 [#102](https://github.com/umami-hep/umami-preprocessing/pull/102)
+- Update Repository Metadata [#104](https://github.com/umami-hep/umami-preprocessing/pull/104)
+
+### [v0.2.5](https://github.com/umami-hep/umami-preprocessing/releases/tag/v0.2.5) (02.07.2025)
+
+- Updating underlying ATLAS packages [#103](https://github.com/umami-hep/umami-preprocessing/pull/103)
+- Update atlas-ftag-tools and puma [#101](https://github.com/umami-hep/umami-preprocessing/pull/101)
+- Fix bug where num jets is not passed to the writer + version updates [#99](https://github.com/umami-hep/umami-preprocessing/pull/99/)
+- updated pre-processing configs for upgrade [#98](https://github.com/umami-hep/umami-preprocessing/pull/98)
+
+### [v0.2.4](https://github.com/umami-hep/umami-preprocessing/releases/tag/v0.2.4) (13.05.2025)
+
+- Enable componentwise Resampling [#93](https://github.com/umami-hep/umami-preprocessing/pull/93)
+- Enable Writing of Multiple Output Files in Merging [#97](https://github.com/umami-hep/umami-preprocessing/pull/97)
+- Rewrite Plotting Code to Enhance Speed [#96](https://github.com/umami-hep/umami-preprocessing/pull/96)
+- Add example config for open dataset [#92](https://github.com/umami-hep/umami-preprocessing/pull/92)
+- Adding GN3V01 Configs & renaming old Folder [#95](https://github.com/umami-hep/umami-preprocessing/pull/95)
+- Improving logger to correctly detect HPC jobs [#94](https://github.com/umami-hep/umami-preprocessing/pull/94)
 - Updating atlas-ftag-tools and puma versions [#91](https://github.com/umami-hep/umami-preprocessing/pull/91)
 - Removing redundent plotting code / Making labels nicer [#89](https://github.com/umami-hep/umami-preprocessing/pull/89)
 
