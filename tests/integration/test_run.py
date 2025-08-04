@@ -23,11 +23,11 @@ class TestClass:
         os.makedirs("tmp/upp-tests/integration/temp_workspace/ntuples", exist_ok=True)
         self.generate_mock("tmp/upp-tests/integration/temp_workspace/ntuples/data1.h5")
         self.generate_mock("tmp/upp-tests/integration/temp_workspace/ntuples/data2.h5")
-        print("setup_method      method:%s" % method.__name__)
+        print(f"setup_method, method: {method.__name__}")
 
     def teardown_method(self, method):
         subprocess.run(["rm", "-r", "tmp"], check=True)
-        print("teardown_method   method:%s" % method.__name__)
+        print(f"teardown_method, method: {method.__name__}")
 
     def test_run_prep_lowpt_ttbar_bjets(self):
         args = [
@@ -134,6 +134,51 @@ class TestClass:
             "lowpt",
         ]
         main(args)
+
+    def test_run_countup_component_lowpt_ttbar_cjets(self):
+        prep_args = [
+            "--config",
+            str(Path(this_dir / "fixtures/test_config_countup.yaml")),
+            "--no-resample",
+            "--no-merge",
+            "--no-norm",
+            "--no-plot",
+            "--split",
+            "train",
+            "--component",
+            "lowpt_ttbar_bjets",
+        ]
+        main(prep_args)
+        resample_args = [
+            "--config",
+            str(Path(this_dir / "fixtures/test_config_countup.yaml")),
+            "--no-merge",
+            "--no-norm",
+            "--no-plot",
+            "--split",
+            "train",
+            "--region",
+            "lowpt",
+            "--component",
+            "lowpt_ttbar_cjets",
+        ]
+        main(resample_args)
+
+    def test_run_countup_component_error(self):
+        args = [
+            "--config",
+            str(Path(this_dir / "fixtures/test_config_countup.yaml")),
+            "--no-merge",
+            "--no-norm",
+            "--no-plot",
+            "--split",
+            "train",
+            "--component",
+            "lowpt_ttbar_cjets",
+        ]
+
+        with pytest.raises(ValueError):
+            main(args)
 
     def test_run_countup_region_error(self):
         args = [
