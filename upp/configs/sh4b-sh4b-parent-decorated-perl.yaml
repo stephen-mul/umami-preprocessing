@@ -1,0 +1,79 @@
+variables: !include /global/homes/s/stmullig/qt_workdir/umami-preprocessing/upp/configs/qt-variables-taus.yaml
+global_cuts: !include /global/homes/s/stmullig/qt_workdir/umami-preprocessing/upp/configs/splits/simple-split.yaml
+
+sh4b: &sh4b
+  name: sh4b
+  pattern: 
+  - sh4b_parent_decorated/*.h5
+hcc: &hcc
+  name: hcc
+  pattern:
+  - user.stmullig.801472.e8441_s3681_r13144_p6453.tdd.FatJets.25_2_46.25-04-02_flat-mass-dump_0_250402_output.h5/*.h5
+top: &top
+  name: top
+  equal_jets: true
+  pattern:
+    - user.stmullig.426345.e6880_s3681_r13144_p6453.tdd.FatJets.25_2_46.25-04-02_flat-mass-dump_0_250402_output.h5/*.h5
+qcd: &qcd
+  name: qcd
+  equal_jets: true
+  pattern:
+    - user.stmullig.364703.e7142_s3681_r13144_p6453.tdd.FatJets.25_2_46.25-04-02_flat-mass-dump_0_250402_output.h5/*.h5 #JZ3
+    - user.stmullig.364704.e7142_s3681_r13144_p6453.tdd.FatJets.25_2_46.25-04-02_flat-mass-dump_0_250402_output.h5/*.h5 #JZ4
+    - user.stmullig.364705.e7142_s3681_r13144_p6453.tdd.FatJets.25_2_46.25-04-02_flat-mass-dump_0_250402_output.h5/*.h5 #JZ5
+
+
+inclusive: &inclusive
+  name: inclusive
+  cuts: []
+
+components:
+  - region:
+      <<: *inclusive
+    sample:
+      <<: *sh4b
+    flavours: [hbb]
+    num_jets: 1_640_000 #15_000_000  #30_000_000
+
+  - region:
+      <<: *inclusive
+    sample:
+      <<: *hcc
+    flavours: [hcc]
+    num_jets: 15_000_000 #30_000_000
+
+  - region:
+      <<: *inclusive
+    sample:
+      <<: *top
+    flavours: [top]
+    num_jets: 4_000_000 #15_000_000 # previously 30_000_000
+
+  - region:
+      <<: *inclusive
+    sample:
+      <<: *qcd
+    flavours: [qcd]
+    num_jets: 50_000_000
+
+resampling:
+  target: hbb
+  method: countup
+  sampling_fraction: 1
+  variables:
+    pt:
+      bins: [[250_000, 1_300_000, 50]]
+    abs_eta:
+      bins: [[0, 2, 20]]
+    mass:
+      bins: [[50_000, 300_000, 50]]
+
+# note: sensible defaults are defined in the PreprocessingConfig constructor
+global:
+  batch_size: 400_000 #4_000_000
+  num_jets_estimate: 1_000_000 #10_000_000
+  base_dir: /global/cfs/cdirs/m2616/stephen/gn2x_deco/upp/sh4b-sh4b-parent-decorated/
+  ntuple_dir: /global/cfs/cdirs/m2616/stephen/gn2x_deco/mc20_flat_mass_p6453_sh4b_p6480/both/
+  components_dir: /global/cfs/cdirs/m2616/stephen/gn2x_deco/upp/sh4b-sh4b-parent-decorated/components/
+  out_dir: /global/cfs/cdirs/m2616/stephen/gn2x_deco/upp/sh4b-sh4b-parent-decorated/outputs/
+  merge_test_samples: True
