@@ -10,7 +10,7 @@ from typing import Any, Literal
 
 import yaml
 from dotmap import DotMap
-from ftag import Cuts
+from ftag import Cuts, Extended_Flavours, Flavours
 from ftag.git_check import get_git_hash
 from ftag.labels import LabelContainer
 from ftag.track_selector import TrackSelector
@@ -20,8 +20,9 @@ from yamlinclude import YamlIncludeConstructor
 from upp import __version__
 from upp.classes.components import Components
 from upp.classes.resampling_config import ResamplingConfig
+from upp.classes.reweight_config import ReweightConfig
 from upp.classes.variable_config import VariableConfig
-from upp.utils import path_append
+from upp.utils.tools import path_append
 
 # support inclusion of yaml files in the config dir
 YamlIncludeConstructor.add_to_loader_class(
@@ -105,11 +106,19 @@ class PreprocessingConfig:
         Name of the jets dataset in the input file. By default "jets".
     flavour_config : Path | None, optional
         Flavour config yaml file which is to be used. By default None
+    flavour_category : str, optional
+        Flavour categories that are to be used. By default, the "standard" (non-extended)
+        labels are loaded. The extended labels can be used by setting this value to "extended".
+        By default "standard". To use this option, flavour_config must be None.
     num_jets_per_output_file : int | None, optional
         Number of jets per final output file. If the number of total jets is larger
         than this number, the final h5 output files are splitted in multiple smaller
         files with this number of jets per file. By default None which produces one
         huge output file.
+    skip_checks : bool, optional
+        Skip checks for the input files. This is used for grid submission
+    skip_config_copy : bool, optional
+        Decide, if the config copying is skipped or not. By default False
     """
 
     config_path: Path
@@ -129,7 +138,10 @@ class PreprocessingConfig:
     merge_test_samples: bool = False
     jets_name: str = "jets"
     flavour_config: Path | None = None
+    flavour_category: str = "standard"
     num_jets_per_output_file: int | None = None
+    skip_checks: bool = False
+    skip_config_copy: bool = False
 
     def __post_init__(self):
         # postprocess paths
@@ -146,17 +158,37 @@ class PreprocessingConfig:
         for field in dataclasses.fields(self):
             if field.type == "Path" and field.name != "out_fname" and field.name != "base_dir":
                 setattr(self, field.name, self.get_path(Path(getattr(self, field.name))))
-        if not self.ntuple_dir.exists():
+        if not self.ntuple_dir.exists() and not self.skip_checks:
             raise FileNotFoundError(f"Path {self.ntuple_dir} does not exist")
         self.components_dir = self.components_dir / self.split
         self.out_fname = self.out_dir / path_append(self.out_fname, self.split)
-        self.flavour_cont = LabelContainer.from_yaml(self.flavour_config)
+        # Define the content of the flavour label container
+        if self.flavour_config:
+            self.flavour_cont = LabelContainer.from_yaml(
+                yaml_path=self.flavour_config,
+            )
 
+        elif self.flavour_category == "standard":
+            self.flavour_cont = Flavours
+
+        elif self.flavour_category == "extended":
+            self.flavour_cont = Extended_Flavours
+
+        else:
+            raise ValueError(
+                f"flavour_category {self.flavour_category} is not supported in the default "
+                "flavours! If you want to use your own flavour config yaml file, please "
+                "provide flavour_config!"
+            )
         # configure classes
-        sampl_cfg = copy(self.config["resampling"])
-        if self.is_test:
-            sampl_cfg["method"] = None
-        self.sampl_cfg = ResamplingConfig(**sampl_cfg)
+        if sampl_cfg := self.config.get("resampling", None):
+            sampl_cfg = copy(sampl_cfg)
+            if self.is_test:
+                sampl_cfg["method"] = None
+            self.sampl_cfg = ResamplingConfig(**sampl_cfg)
+        else:
+            self.sampl_cfg = None
+
         self.components = Components.from_config(self)
 
         # get track selectors
@@ -170,13 +202,21 @@ class PreprocessingConfig:
         self.variables = VariableConfig(
             self.config["variables"], self.jets_name, self.is_test, selectors
         )
-        self.variables = self.variables.add_jet_vars(
-            list(self.config["resampling"]["variables"].keys()), "labels"
-        )
+        if self.sampl_cfg is not None:
+            self.variables = self.variables.add_jet_vars(
+                list(self.config["resampling"]["variables"].keys()), "labels"
+            )
         self.transform = (
             Transform(**self.config["transform"]) if "transform" in self.config else None
         )
 
+        self.rw_config = (
+            ReweightConfig(
+                **self.config["reweighting"],
+            )
+            if "reweighting" in self.config
+            else None
+        )
         # reproducibility
         self.git_hash = get_git_hash(Path(__file__).parent)
         if self.git_hash is None:
@@ -184,15 +224,29 @@ class PreprocessingConfig:
         self.config["upp_hash"] = self.git_hash
 
         # copy config
-        self.copy_config()
+        if not self.skip_config_copy:
+            self.copy_config()
 
     @classmethod
-    def from_file(cls, config_path: Path, split: Split):
+    def from_file(
+        cls,
+        config_path: Path,
+        split: Split,
+        skip_checks: bool = False,
+        skip_config_copy: bool = False,
+    ):
         if not config_path.exists():
             raise FileNotFoundError(f"{config_path} does not exist - check your --config arg")
         with open(config_path) as file:
             config = yaml.safe_load(file)
-            return cls(config_path, split, config, **config["global"])
+            return cls(
+                config_path=config_path,
+                split=split,
+                config=config,
+                skip_config_copy=skip_config_copy,
+                **config["global"],
+                skip_checks=skip_checks,
+            )
 
     def get_path(self, path: Path):
         return path if path.is_absolute() else (self.base_dir / path).absolute()
@@ -205,7 +259,7 @@ class PreprocessingConfig:
     def global_cuts(self):
         cuts_list = self.config["global_cuts"].get("common", [])
         cuts_list += self.config["global_cuts"][self.split]
-        if not self.is_test:
+        if not self.is_test and self.config.get("resampling", None) is not None:
             for resampling_var, cfg in self.config["resampling"]["variables"].items():
                 cuts_list.append([resampling_var, ">", cfg["bins"][0][0]])
                 cuts_list.append([resampling_var, "<", cfg["bins"][-1][1]])
@@ -235,7 +289,7 @@ class PreprocessingConfig:
         with open(copy_config_path, "w") as file:
             yaml.dump(self.config, file, sort_keys=False)
 
-    def get_umami_general(self):
+    def get_umami_general(self) -> DotMap:
         """
         Return the arguments to be fed into GeneralSettings class in umami.
 
@@ -287,7 +341,7 @@ class PreprocessingConfig:
             self.general.convert_to_tfrecord = self.config["umami"]["convert_to_tfrecord"]
         return self
 
-    def get_file_name(self, option: str):
+    def get_file_name(self, option: str) -> Path | str:
         """Mimics the 'get_file_name()' function in PreprocessingConfig class in umami.
 
         Parameters
@@ -301,8 +355,13 @@ class PreprocessingConfig:
 
         Returns
         -------
-        str
+        Path | str
             The resulting file name based on the specified 'option'.
+
+        Raises
+        ------
+        ValueError
+            If the option value is not supported
         """
         if option == "resampled":
             return self.out_fname
@@ -314,3 +373,39 @@ class PreprocessingConfig:
                 + "_resampled_scaled_shuffled"
                 + self.out_fname.suffix
             )
+        else:
+            raise ValueError(
+                f"Option value {option} is not supported! "
+                "Only resampled and resampled_scaled_shuffled are."
+            )
+
+    # Static because otherwise config paths end up getting messed up
+    @staticmethod
+    def get_input_files_with_split_components(config_path):
+        """Return a nested dictionary of the form.
+
+        {
+            "container_1" : {
+                "train_bjets" : list[str] : -> which are cuts
+                "test_bjets" : list[str] : -> which are cuts
+                ...
+                "test_cjets" : list[str] : -> which are cuts
+
+            },
+            "container_2" : ...
+        }
+        which represents all splits and components to be run for each input container
+        """
+        containers_with_splits = {}
+
+        for split in ["train", "val", "test"]:
+            split_config = PreprocessingConfig.from_file(config_path, split, skip_checks=True)
+
+            for component in split_config.components.components:
+                for container in component.sample.pattern:
+                    if container not in containers_with_splits:
+                        containers_with_splits[container] = {}
+                    component_cuts = component.cuts
+                    containers_with_splits[container][f"{split}_{component.name}"] = component_cuts
+
+        return containers_with_splits

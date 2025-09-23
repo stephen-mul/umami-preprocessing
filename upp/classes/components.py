@@ -336,6 +336,7 @@ class Components:
                 pattern=pattern,
                 ntuple_dir=config.ntuple_dir,
                 name=component["sample"]["name"],
+                skip_checks=config.skip_checks,
             )
 
             # Create the Component instances for the different flavours
@@ -360,7 +361,7 @@ class Components:
         components = cls(component_list)
 
         # Check the flavour ratios
-        if config.sampl_cfg.method is not None:
+        if config.sampl_cfg and config.sampl_cfg.method is not None:
             components.check_flavour_ratios()
 
         return components
@@ -418,7 +419,7 @@ class Components:
 
         Returns
         -------
-        list[str]
+        list[Label]
             List of flavours
         """
         return list(dict.fromkeys(c.flavour for c in self))
@@ -429,8 +430,8 @@ class Components:
 
         Returns
         -------
-        list
-            List with all the cuts
+        Cuts
+            Cuts object with all cuts
         """
         return sum((c.cuts for c in self), Cuts.from_list([]))
 
