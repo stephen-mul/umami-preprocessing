@@ -3,19 +3,20 @@ from __future__ import annotations
 import logging as log
 import random
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 import numpy as np
 import yaml
 from ftag.hdf5 import H5Reader
 from yamlinclude import YamlIncludeConstructor
 
-from upp.logger import ProgressBar
 from upp.stages.hist import bin_jets
 from upp.stages.interpolation import subdivide_bins, upscale_array_regionally
+from upp.utils.logger import ProgressBar
 
 if TYPE_CHECKING:  # pragma: no cover
-    from typing import Any, Generator
+    from collections.abc import Generator
+    from typing import Any
 
     from rich.progress import Progress
 
@@ -68,6 +69,9 @@ class Resampling:
         self.transform = config.transform
 
         self.rng = np.random.default_rng(42)
+
+        # Define what type self.target will be
+        self.target = cast("Component", None)
 
     def countup_select_func(self, jets: dict, component: Component) -> np.ndarray:
         """Countup resampling function.
@@ -560,7 +564,7 @@ class Resampling:
 
         Returns
         -------
-        typing.List[typing.List[int]]
+        list[list[int]]
             lengths of the binning regions in each variable from the config
         """
         num_bins = []

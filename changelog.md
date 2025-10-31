@@ -2,6 +2,16 @@
 
 ### [Latest]
 
+### [v0.2.7](https://github.com/umami-hep/umami-preprocessing/releases/tag/v0.2.7) (01.10.2025)
+
+- Update Package Versions [#112](https://github.com/umami-hep/umami-preprocessing/pull/112)
+
+### [v0.2.6](https://github.com/umami-hep/umami-preprocessing/releases/tag/v0.2.6) (07.08.2025)
+
+- Added support for reweighting instead of resampling [#105](https://github.com/umami-hep/umami-preprocessing/pull/105)
+- Update atlas-ftag-tools and puma [#109](https://github.com/umami-hep/umami-preprocessing/pull/109)
+- Adding Sample Check in prepare Stage [#108](https://github.com/umami-hep/umami-preprocessing/pull/108)
+- Adding init functions and general clean-up [#107](https://github.com/umami-hep/umami-preprocessing/pull/107)
 - Adding pydoclint and Update Pre-Commit [#106](https://github.com/umami-hep/umami-preprocessing/pull/106)
 - Updated config for gn3xv00 [#102](https://github.com/umami-hep/umami-preprocessing/pull/102)
 - Update Repository Metadata [#104](https://github.com/umami-hep/umami-preprocessing/pull/104)
