@@ -34,6 +34,7 @@ jets:
     - R10TruthLabel_R22v1Relabelled
     - R10TruthLabel_R22v1_TruthJetMass
     - R10TruthLabel_R22v1_TruthJetPt
+    - parentPdgIdOverlapCount
 
 tracks:
   inputs:
