@@ -1,0 +1,43 @@
+variables: !include /global/homes/s/stmullig/qt_workdir/umami-preprocessing/upp/configs/qt-variables-taus-relabelled.yaml
+global_cuts: !include /global/homes/s/stmullig/qt_workdir/umami-preprocessing/upp/configs/splits/evaluation-split.yaml
+
+hbb: &hbb
+  name: hbb
+  pattern: 
+  - user.stmullig.601194.e8400_s3681_r13144_p6922.tdd.FatJets.25_2_59.26-01-15_sm-hbb-validation_260115_output.h5/*.h5
+
+inclusive: &inclusive
+  name: inclusive
+  cuts: []
+
+components:
+  - region:
+      <<: *inclusive
+    sample:
+      <<: *hbb
+    flavours: [hbb]
+    num_jets: 773_763
+    num_jets_test: 773_763
+
+resampling:
+  target: hbb
+  method: none
+  sampling_fraction: 1
+  variables:
+    pt:
+      bins: [[250_000, 1_500_000, 50]]
+    abs_eta:
+      bins: [[0, 2, 20]]
+    mass:
+      bins: [[50_000, 200_000, 50]]
+
+# note: sensible defaults are defined in the PreprocessingConfig constructor
+global:
+  batch_size: 1_000_000
+  num_jets_estimate: 1_000_000 #10_000_000
+  base_dir: /global/cfs/cdirs/m2616/stephen/gn2x_deco/upp/sm-hbb-validation_250115/
+  ntuple_dir: /global/cfs/cdirs/m2616/stephen/gn2x_deco/mc20_flat_mass_p6453_sh4b_p6480/sm_hbb_validation/
+  components_dir: /global/cfs/cdirs/m2616/stephen/gn2x_deco/upp/sm-hbb-validation_250115/components/
+  out_dir: /global/cfs/cdirs/m2616/stephen/gn2x_deco/upp/sm-hbb-validation_250115/outputs/
+  merge_test_samples: True
+  flavour_config: /global/homes/s/stmullig/qt_workdir/umami-preprocessing/upp/configs/relabelled_flavours.yaml

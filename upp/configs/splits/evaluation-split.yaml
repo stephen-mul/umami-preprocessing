@@ -1,0 +1,4 @@
+# splitting for evaluation samples, all data should be assigned to test
+train: []
+val: []
+test: []
